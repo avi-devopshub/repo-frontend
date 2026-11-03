@@ -49,9 +49,11 @@ pipeline{
                 # 5. Push the feature branch to GitHub
                 git push origin ${BRANCH_NAME}
                 
-                # 6. Open the Pull Request using GitHub CLI (gh)
-                # Assumes TARGET_BRANCH is passed as a parameter (e.g., dev, qa, main)
-                gh pr create --base ${TARGET_BRANCH} --head ${BRANCH_NAME} --title "Update Image Tag for ${TARGET_BRANCH}" --body "Automated update from Jenkins build #${BUILD_NUMBER}"
+                # Fallback to 'main' if TARGET_BRANCH environment variable is empty
+                DEST_BRANCH="${TARGET_BRANCH:-main}"
+                
+                # Explicitly quote parameters to prevent argument shifting
+                gh pr create --base "${DEST_BRANCH}" --head "${BRANCH_NAME}" --title "Update Image Tag for ${DEST_BRANCH}" --body "Automated update from Jenkins build #${BUILD_NUMBER}"
             '''
         }
     }
