@@ -28,6 +28,7 @@ pipeline{
     steps {
         withCredentials([usernamePassword(credentialsId: 'github-token', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PAT')]) {
             sh '''
+                rm -rf environment-branching
                 # 1. Clone using the token for authentication
                 git clone https://${GIT_USER}:${GIT_PAT}@github.com/avi-devopshub/environment-branching.git
                 cd environment-branching
