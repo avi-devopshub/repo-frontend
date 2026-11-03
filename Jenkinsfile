@@ -24,6 +24,19 @@ pipeline{
         sh "aws s3 cp index.html s3://frontend-repo-537971897528-ap-south-1-an/${params.BRANCH_NAME}/"
       }
     }
+    stage('GitHub Authentication') {
+    steps {
+        withCredentials([
+            string(credentialsId: 'github-token',
+                   variable: 'GH_TOKEN')
+        ]) {
+            sh '''
+                echo "$GH_TOKEN" | gh auth login --with-token
+                gh auth status
+            '''
+        }
+    }
+}
     stage('checkout-diff-repo'){
     steps {
         withCredentials([usernamePassword(credentialsId: 'github-token', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PAT')]) {
