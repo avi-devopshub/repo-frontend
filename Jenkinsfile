@@ -29,30 +29,27 @@ pipeline{
         withCredentials([usernamePassword(credentialsId: 'github-token', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PAT')]) {
             sh '''
                 rm -rf environment-branching
-                # 1. Clone using the token for authentication
+                
                 git clone https://${GIT_USER}:${GIT_PAT}@github.com/avi-devopshub/environment-branching.git
                 cd environment-branching
                 
-                # 2. Configure Git identity locally (fix typos)
+                # Fetch all remote branches and history so GitHub CLI can track them
+                git fetch origin
+                
                 git config user.name "Avinash"
                 git config user.email "avinashmk1998@gmail.com"
                 
-                # 3. Create a unique feature branch
                 BRANCH_NAME="update-image-${BUILD_NUMBER}"
                 git checkout -b ${BRANCH_NAME}
                 
-                # 4. Perform your file updates (e.g., adding image.txt or running yq)
                 touch image.txt
                 git add image.txt
                 git commit -m "chore: automated image tag update"
                 
-                # 5. Push the feature branch to GitHub
                 git push origin ${BRANCH_NAME}
                 
-                # Fallback to 'main' if TARGET_BRANCH environment variable is empty
                 DEST_BRANCH="${TARGET_BRANCH:-main}"
                 
-                # Explicitly quote parameters to prevent argument shifting
                 GH_TOKEN="${GIT_PAT}" gh pr create --base "${DEST_BRANCH}" --head "${BRANCH_NAME}" --title "Update Image Tag for ${DEST_BRANCH}" --body "Automated update from Jenkins build #${BUILD_NUMBER}"
             '''
         }
