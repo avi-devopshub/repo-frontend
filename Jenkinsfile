@@ -53,7 +53,7 @@ pipeline{
                 DEST_BRANCH="${TARGET_BRANCH:-main}"
                 
                 # Explicitly quote parameters to prevent argument shifting
-                gh pr create --base "${DEST_BRANCH}" --head "${BRANCH_NAME}" --title "Update Image Tag for ${DEST_BRANCH}" --body "Automated update from Jenkins build #${BUILD_NUMBER}"
+                GH_TOKEN="${GIT_PAT}" gh pr create --base "${DEST_BRANCH}" --head "${BRANCH_NAME}" --title "Update Image Tag for ${DEST_BRANCH}" --body "Automated update from Jenkins build #${BUILD_NUMBER}"
             '''
         }
     }
