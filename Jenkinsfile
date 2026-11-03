@@ -12,7 +12,7 @@ pipeline{
   stages{
     stage('checkout'){
       steps{
-        git branch: '${params.BRANCH_NAME}',
+        git branch: "${params.BRANCH_NAME}",
             url: 'https://github.com/avi-devopshub/repo-frontend.git'           
       }
     }
