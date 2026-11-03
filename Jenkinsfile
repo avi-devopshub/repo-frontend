@@ -21,5 +21,10 @@ pipeline{
         sh 'aws s3 cp index.html s3://frontend-repo-537971897528-ap-south-1-an/${params.BRANCH_NAME}/'
       }
     }
+    stage('sonarqube-analysis'){
+      steps{
+        echo 'sonarqube-Analysis...'
+      }
+    }
   }
 }
