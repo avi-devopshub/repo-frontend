@@ -33,23 +33,26 @@ pipeline{
                 git clone https://${GIT_USER}:${GIT_PAT}@github.com/avi-devopshub/environment-branching.git
                 cd environment-branching
                 
-                # Fetch all remote branches and history so GitHub CLI can track them
-                git fetch origin
-                
                 git config user.name "Avinash"
                 git config user.email "avinashmk1998@gmail.com"
                 
+                DEST_BRANCH="${TARGET_BRANCH:-main}"
+                
+                # 1. Fetch and checkout the target base branch properly
+                git checkout ${DEST_BRANCH}
+                git pull origin ${DEST_BRANCH}
+                
+                # 2. Create your unique feature branch off the updated base
                 BRANCH_NAME="update-image-${BUILD_NUMBER}"
                 git checkout -b ${BRANCH_NAME}
                 
+                # 3. Make changes, commit, and push
                 touch image.txt
                 git add image.txt
                 git commit -m "chore: automated image tag update"
-                
                 git push origin ${BRANCH_NAME}
                 
-                DEST_BRANCH="${TARGET_BRANCH:-main}"
-                
+                # 4. Create the Pull Request
                 GH_TOKEN="${GIT_PAT}" gh pr create --base "${DEST_BRANCH}" --head "${BRANCH_NAME}" --title "Update Image Tag for ${DEST_BRANCH}" --body "Automated update from Jenkins build #${BUILD_NUMBER}"
             '''
         }
