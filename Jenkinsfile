@@ -3,9 +3,6 @@ pipeline {
     agent {
         label 'agent'
     }
-    options {
-        skipDefaultCheckout()
-    }
 
     parameters {
         choice(
